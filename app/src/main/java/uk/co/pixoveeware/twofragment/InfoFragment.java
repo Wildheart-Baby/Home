@@ -1,5 +1,6 @@
 package uk.co.pixoveeware.twofragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -24,11 +25,16 @@ import android.widget.Spinner;
  * Use the {@link InfoFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class InfoFragment extends Fragment {
+public class InfoFragment extends Fragment implements View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    @Override
+    public void onClick(View v) {
+            showInfo();
+    }
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -70,6 +76,7 @@ public class InfoFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_info, container, false);
 
+        titleSelected = "Mr";
         titles = (Spinner) view.findViewById(R.id.ddTitle);
         name = (EditText) view.findViewById(R.id.txtName);
         email = (EditText) view.findViewById(R.id.txtEmail);
@@ -80,7 +87,8 @@ public class InfoFragment extends Fragment {
                 R.array.titles, android.R.layout.simple_spinner_item);
         titles.setAdapter(adapter);
 
-        return inflater.inflate(R.layout.fragment_info, container, false);
+        done.setOnClickListener(this);
+        return view;
     }
 
     @Override
@@ -91,37 +99,18 @@ public class InfoFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        titleSelected = "Mr";
-
-
-
-        titles.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                titleSelected = (String) titles.getSelectedItem();
-                Log.d("title", titleSelected);
-            }
-
-            public void onNothingSelected(
-                    AdapterView<?> adapterView) {
-            }
-        });
-
-        done.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showInfo();
-            }
-        });
 
     }
 
-    public void addSpinner(View view){
+    public class SpinnerActivity extends Activity implements AdapterView.OnItemSelectedListener {
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            titleSelected = (String) titles.getSelectedItem();
+            Log.d("title", titleSelected);
+        }
 
-        titles = (Spinner) view.findViewById(R.id.ddTitle);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(view.getContext(),
-                R.array.titles, android.R.layout.simple_spinner_item);
-
-        titles.setAdapter(adapter);
+        public void onNothingSelected(
+                AdapterView<?> adapterView) {
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -143,6 +132,7 @@ public class InfoFragment extends Fragment {
     }
 
     public void showInfo(){
+        Intent i = new Intent(getContext(), MainActivity.class);
         Bundle infoMap = new Bundle();
         Name = "";
         Email = "";
@@ -152,8 +142,6 @@ public class InfoFragment extends Fragment {
         nameValid = false;
         emailValid = false;
         mobileValid = false;
-
-        //if(Validation.hasText(name) & Validation.hasText(email) & Validation.hasText(mobile)) {Name = name.getText().toString(); Email = email.getText().toString(); Mobile = mobile.getText().toString(); ret = true;}
 
         if(Validation.hasText(name)){
             Name = name.getText().toString();
@@ -176,11 +164,14 @@ public class InfoFragment extends Fragment {
 
         Log.d("basic-info", "Name: " + Name + " Email: " + Email + " Mobile: " + Mobile);
 
-        if (nameValid == true & mobileValid == true & emailValid == true){infoMap.putString("title", titleSelected);
-            infoMap.putString("name", Name);
-            infoMap.putString("email", Email);
-            infoMap.putString("mobile", Mobile);
+        if (nameValid == true & mobileValid == true & emailValid == true){
+            //infoMap.putString("title", titleSelected);
+            //infoMap.putString("name", Name);
+            //infoMap.putString("email", Email);
+            //infoMap.putString("mobile", Mobile);
             //i.putExtras(infoMap);
+            mListener.sendData(Name, titleSelected, Email, Mobile);
+
             name.setText(null);
             email.setText(null);
             mobile.setText(null);
@@ -206,5 +197,8 @@ public class InfoFragment extends Fragment {
     public interface OnInfoFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+        void sendData(String Name, String Title, String Email, String Mobile );
     }
+
+
 }
