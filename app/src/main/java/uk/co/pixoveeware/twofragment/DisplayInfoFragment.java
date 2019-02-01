@@ -7,6 +7,8 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
 
 
 /**
@@ -28,6 +30,9 @@ public class DisplayInfoFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    String titleSelected, Name, Email, Mobile;
+    TextView name, email, mobile;
 
     public DisplayInfoFragment() {
         // Required empty public constructor
@@ -51,14 +56,7 @@ public class DisplayInfoFragment extends Fragment {
         return fragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,6 +64,37 @@ public class DisplayInfoFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_display_info, container, false);
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        Bundle args = getArguments();
+        if (args != null) {
+            //mParam1 = getArguments().getString(ARG_PARAM1);
+            //mParam2 = getArguments().getString(ARG_PARAM2);
+            titleSelected = args.getString("title");
+            Name = args.getString("name");
+            Email = args.getString("email");
+            Mobile = args.getString("mobile");
+
+            updateInfo(Name, titleSelected, Email, Mobile);
+        }
+    }
+
+
+    public void updateInfo(String Name, String Title, String Email, String Mobile){
+        name = (TextView) getActivity().findViewById(R.id.lblName);
+        email = (TextView) getActivity().findViewById(R.id.lblEmail);
+        mobile = (TextView) getActivity().findViewById(R.id.lblMobile);
+
+        Name = titleSelected + " " + Name;
+        name.setText(Name);
+        email.setText(Email);
+        mobile.setText(Mobile);
+    }
+
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
